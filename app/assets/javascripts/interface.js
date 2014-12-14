@@ -13,16 +13,18 @@ angular.module('amortization', [])
 			return $scope.loanAmount * $scope.getRatePerPeriod() * onePlusRtoPowerOfN/(onePlusRtoPowerOfN-1)
 		};
 
-		$scope.amortizationRows = [];
 
 		$scope.createTable = function() {
-				var balance = $scope.loanAmount;
-				$scope.totalInterest = 0;
-				$scope.totalPrincipal =0;
-				$scope.totalPayment = 0;
+			$scope.amortizationRows = [];
+			var balance = $scope.loanAmount;
+			$scope.totalInterest = 0;
+			$scope.totalPrincipal =0;
+			$scope.totalPayment = 0;
+			$scope.paymentDate = $scope.firstPaymentDate;
 			for (i=1; i<=$scope.getNumberOfPayments(); i++) {
 				$scope.amortizationRows.push({
 					index:i, 
+					date: $scope.paymentDate.setMonth($scope.paymentDate.getMonth()+(12/$scope.paymentFrequency)),
 					payment:$scope.getPaymentPerPeriod(), 
 					interest: $scope.calInterestPortion(balance), 
 					principal: $scope.calPrincipalPortion(balance),
@@ -32,9 +34,11 @@ angular.module('amortization', [])
 				$scope.totalInterest += $scope.calInterestPortion(balance);
 				$scope.totalPrincipal += $scope.calPrincipalPortion(balance);
 				$scope.totalPayment += $scope.getPaymentPerPeriod();
+				$scope.paymentDate = new Date($scope.paymentDate.setMonth($scope.paymentDate.getMonth()+(12/$scope.paymentFrequency)));
 			}
 			$scope.amortizationRows.push({
 				index:"TOTAL", 
+				date: $scope.paymentDate,
 				payment:$scope.totalPayment, 
 				interest: $scope.totalInterest, 
 				principal: $scope.totalPrincipal,

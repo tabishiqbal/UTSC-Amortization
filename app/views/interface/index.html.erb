@@ -30,7 +30,7 @@
 <%= text_field_tag :term_of_loan, nil, 'ng-model'=>'termOfLoan' %> <br>
 
 <%= label_tag :first_payment_date %>
-<%= date_field_tag :first_payment_date, nil, 'ng-model'=>'first_payment_date' %> <br>
+<%= date_field_tag :first_payment_date, nil, 'ng-model'=>'firstPaymentDate' %> <br>
 
 <%= label_tag :payment_frequency %>
 <%= text_field_tag :payment_frequency, nil, 'ng-model'=>'paymentFrequency' %> <br>
@@ -39,8 +39,6 @@
 <%= text_field_tag :compound_period, nil, 'ng-model'=>'compoundPeriod' %> <br>
 <p>Basic amortization calculators usually assume that the payment frequency matches the compounding period. In that case, the rate per period is simply the nominal annual interest rate divided by the number of periods per year. When the compound period and payment period are different (as in Canadian mortgages), a more general formula is needed (see my amortization calculation article).</p>
 
-<%= label_tag :payment_type %>
-<%= text_field_tag :payment_type, nil, 'ng-model'=>'payment_type' %> <br>
 
 <button ng-click="createTable()">Calculate</button>
 
@@ -51,12 +49,13 @@
 <p>Payment: {{getPaymentPerPeriod()}}</p>
 <p>Total payment:{{totalPayment}}</p>
 <p>Total interest: {{totalInterest}}</p>
-<p>Last payment date: </p>
+<p>Last payment date: {{paymentDate| date: 'MM/dd/yyyy'}}</p>
 
 <h1>Amortization table</h1>
 <table>
 	<th>
 		<tr>Sequence</tr>
+		<tr>Due date</tr>
 		<tr>Payment Amount</tr>
 		<tr>Interest</tr>
 		<tr>Principal</tr>
@@ -65,6 +64,7 @@
 	<tbody>	
 		<tr ng-repeat="amortizationRow in amortizationRows">
 			<td>{{amortizationRow.index}}</td>
+			<td>{{amortizationRow.date| date: 'MM/dd/yyyy'}}</td>
 			<td>{{amortizationRow.payment}}</td>
 			<td>{{amortizationRow.interest}}</td>
 			<td>{{amortizationRow.principal}}</td>
