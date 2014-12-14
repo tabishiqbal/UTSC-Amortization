@@ -30,7 +30,7 @@
 <%= text_field_tag :term_of_loan, nil, 'ng-model'=>'termOfLoan' %> <br>
 
 <%= label_tag :first_payment_date %>
-<%= text_field_tag :first_payment_date, nil, 'ng-model'=>'first_payment_date' %> <br>
+<%= date_field_tag :first_payment_date, nil, 'ng-model'=>'first_payment_date' %> <br>
 
 <%= label_tag :payment_frequency %>
 <%= text_field_tag :payment_frequency, nil, 'ng-model'=>'paymentFrequency' %> <br>
@@ -49,8 +49,8 @@
 <p>Number of payments: {{getNumberOfPayments()}}</p>
 <p>Rate (per period):{{getRatePerPeriod()}}</p>
 <p>Payment: {{getPaymentPerPeriod()}}</p>
-<p>Total payment:{{calPrincipalPortion()}}</p>
-<p>Total interest: {{calInterestPortion()}}</p>
+<p>Total payment:{{totalPayment}}</p>
+<p>Total interest: {{totalInterest}}</p>
 <p>Last payment date: </p>
 
 <h1>Amortization table</h1>

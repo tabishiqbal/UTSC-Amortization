@@ -17,6 +17,9 @@ angular.module('amortization', [])
 
 		$scope.createTable = function() {
 				var balance = $scope.loanAmount;
+				$scope.totalInterest = 0;
+				$scope.totalPrincipal =0;
+				$scope.totalPayment = 0;
 			for (i=1; i<=$scope.getNumberOfPayments(); i++) {
 				$scope.amortizationRows.push({
 					index:i, 
@@ -25,9 +28,18 @@ angular.module('amortization', [])
 					principal: $scope.calPrincipalPortion(balance),
 					balance: balance-$scope.calPrincipalPortion(balance)
 				});
-				balance = balance - $scope.calPrincipalPortion(balance);
+				balance -= $scope.	calPrincipalPortion(balance);
+				$scope.totalInterest += $scope.calInterestPortion(balance);
+				$scope.totalPrincipal += $scope.calPrincipalPortion(balance);
+				$scope.totalPayment += $scope.getPaymentPerPeriod();
 			}
-
+			$scope.amortizationRows.push({
+				index:"TOTAL", 
+				payment:$scope.totalPayment, 
+				interest: $scope.totalInterest, 
+				principal: $scope.totalPrincipal,
+				balance: balance
+			});
 		};
 
 		$scope.calInterestPortion = function(balance) {
