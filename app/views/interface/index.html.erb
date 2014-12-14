@@ -33,10 +33,10 @@
 <%= date_field_tag :first_payment_date, nil, 'ng-model'=>'firstPaymentDate' %> <br>
 
 <%= label_tag :payment_frequency %>
-<%= text_field_tag :payment_frequency, nil, 'ng-model'=>'paymentFrequency' %> <br>
+<%= select_tag :payment_frequency, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]]), 'ng-model'=>'paymentFrequency' %> <br>
 
 <%= label_tag :compound_period %> 
-<%= text_field_tag :compound_period, nil, 'ng-model'=>'compoundPeriod' %> <br>
+<%= select_tag :compound_period, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]]), 'ng-model'=>'compoundPeriod' %> <br>
 <p>Basic amortization calculators usually assume that the payment frequency matches the compounding period. In that case, the rate per period is simply the nominal annual interest rate divided by the number of periods per year. When the compound period and payment period are different (as in Canadian mortgages), a more general formula is needed (see my amortization calculation article).</p>
 
 
@@ -45,10 +45,10 @@
 
 <h1>Loan Summary</h1>
 <p>Number of payments: {{getNumberOfPayments()}}</p>
-<p>Rate (per period):{{getRatePerPeriod()}}</p>
-<p>Payment: {{getPaymentPerPeriod()}}</p>
-<p>Total payment:{{totalPayment}}</p>
-<p>Total interest: {{totalInterest}}</p>
+<p>Rate (per period):{{getRatePerPeriod()|number:6}}</p>
+<p>Payment: {{getPaymentPerPeriod()|currency:$:2}}</p>
+<p>Total payment:{{totalPayment|currency:$:2}}</p>
+<p>Total interest: {{totalInterest|currency:$:2}}</p>
 <p>Last payment date: {{paymentDate| date: 'MM/dd/yyyy'}}</p>
 
 <h1>Amortization table</h1>
@@ -65,10 +65,10 @@
 		<tr ng-repeat="amortizationRow in amortizationRows">
 			<td>{{amortizationRow.index}}</td>
 			<td>{{amortizationRow.date| date: 'MM/dd/yyyy'}}</td>
-			<td>{{amortizationRow.payment}}</td>
-			<td>{{amortizationRow.interest}}</td>
-			<td>{{amortizationRow.principal}}</td>
-			<td>{{amortizationRow.balance}}</td>
+			<td>{{amortizationRow.payment|currency:$:2}}</td>
+			<td>{{amortizationRow.interest|currency:$:2}}</td>
+			<td>{{amortizationRow.principal|currency:$:2}}</td>
+			<td>{{amortizationRow.balance|currency:$:2}}</td>
 		</tr>
 	</tbody>
 </table>
