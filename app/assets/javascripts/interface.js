@@ -19,6 +19,7 @@ angular.module('amortization', [])
 		var dateRange = [];
 		var interestRange = [];
 		var principalRange = [];
+		var balanceRange = [];
 		var balance = $scope.loanAmount;
 		$scope.totalInterest = 0;
 		$scope.totalPrincipal =0;
@@ -40,6 +41,7 @@ angular.module('amortization', [])
 				dateRange.push(niceDate);
 				interestRange.push($scope.amortizationRows[i].interest);
 				principalRange.push($scope.amortizationRows[i].principal);
+				balanceRange.push($scope.amortizationRows[i].balance);
 
 				balance -= $scope.	calPrincipalPortion(balance);
 				$scope.totalInterest += $scope.calInterestPortion(balance);
@@ -62,7 +64,7 @@ $(function () {
 	var options = {
 		chart: {
 			renderTo: 'container',
-			type: 'column'
+			type: 'column',
 		},
 		title: {
 			text: 'Amortization Schedule'
@@ -76,12 +78,24 @@ $(function () {
 				rotation: -90
 			}
 		},
-		yAxis: {
+		yAxis: [{
+			labels: {
+				format: '${value}'
+			},	
 			min: 0,
 			title: {
 				text: 'Amortization Payment per Period'
 			}
-		},
+		}, {
+			labels: {
+				format: '${value}'
+			},
+			min: 0,
+			title: {
+				text: 'Loan Balance'
+			}, 
+			opposite: true	
+		}],
 		stackLabels: {
 			enable: true,
 			style: {
@@ -103,8 +117,7 @@ $(function () {
 		tooltip: {
 			formatter: function () {
 				return '<b>' + this.x + '</b><br/>' +
-				this.series.name + ': $' + this.y.toFixed(2) + '<br/>' +
-				'Total: $' + this.point.stackTotal.toFixed(2);
+				this.series.name + ': $' + this.y.toFixed(2);
 			}
 		},
 		plotOptions: {
@@ -113,13 +126,72 @@ $(function () {
 			}
 		},	
 
-		series: [{name: 'Interest'}, {name: 'Principal'}]
+		series: [{
+			name: 'Interest',
+			type: 'column',
+			yAxis: 1
+		}, {
+			name: 'Principal',
+			type: 'column',
+			yAxis: 1
+		}, {
+			name: 'Balance',
+			type: 'spline'
+		}]
 	}; 
 	options.xAxis.categories = dateRange;
 	options.series[0].data = interestRange;
 	options.series[1].data = principalRange;
+	options.series[2].data = balanceRange;
 	var chart = new Highcharts.Chart(options);
 });
+// Pie chart here
+$(function () {
+
+    $(document).ready(function () {
+
+        // Build the chart
+        $('#pie').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+            	text: 'Total Payment Breakdown'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false
+                    },
+                    showInLegend: true
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Total payment',
+                data: [
+                    {
+                        name: 'Total Interest',
+                        y: $scope.totalInterest,
+                        sliced: true,
+                        selected: true
+                    },
+                    ['Total Principal',    $scope.totalPrincipal],
+                    ['Rounding Error',     $scope.totalPayment-$scope.totalPrincipal-$scope.totalInterest]
+                ]
+            }]
+        });
+    });
+
+});
+
 };
 
 $scope.calInterestPortion = function(balance) {
