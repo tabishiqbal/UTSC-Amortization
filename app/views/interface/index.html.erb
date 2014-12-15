@@ -1,4 +1,9 @@
-<h1>Amortization Table</h1>
+
+<div class="row">
+	<div class="col-md-6">
+		<h1>Amortization Table</h1>
+	</div>
+</div>
 <br>
 <h3>Calculating the Payment Amount per Period</h3>
 <%= image_tag 'Amortization-Formular.gif' %> <br>
@@ -19,28 +24,44 @@
 	<li>p = number of payment periods per year</li>
 </ul>
 
-<%= label_tag :loan_amount %>
-<%= text_field_tag :loan_amount, 20000, 'ng-model'=>'loanAmount' %> <br>
+<h1>Enter mortgage details</h1>
+<%= form_tag do %>
+	<div class="form-group">
+		<%= label_tag :loan_amount %>
+		<%= text_field_tag :loan_amount, 20000, 'ng-model'=>'loanAmount', :class=>'form-control' %> 
+	</div>
+	
+	<div class="form-group">
+		<%= label_tag :annual_interest_rate %>
+		<%= text_field_tag :annual_interest_rate, 0.075, 'ng-model'=>'annualInterestRate', :class=>'form-control' %> 
+	</div>
+		
+	<p>Usually, the interest rate that you enter into an amortization calculator is the nominal annual rate. However, when creating an amortization schedule, it is the interest rate per period that you use in the calculations, labeled rate per period in the above spreadsheet.</p>
+	
+	<div class="form-group">
+		<%= label_tag :term_of_loan %>
+		<%= text_field_tag :term_of_loan, nil, 'ng-model'=>'termOfLoan', :class=>'form-control' %>
+	</div>
 
-<%= label_tag :annual_interest_rate %>
-<%= text_field_tag :annual_interest_rate, 0.075, 'ng-model'=>'annualInterestRate' %> <br>
-<p>Usually, the interest rate that you enter into an amortization calculator is the nominal annual rate. However, when creating an amortization schedule, it is the interest rate per period that you use in the calculations, labeled rate per period in the above spreadsheet.</p>
+	<div class="form-group">
+		<%= label_tag :first_payment_date %>
+		<%= date_field_tag :first_payment_date, nil, 'ng-model'=>'firstPaymentDate', :class=>'form-control' %>
+	</div>
 
-<%= label_tag :term_of_loan %>
-<%= text_field_tag :term_of_loan, 3, 'ng-model'=>'termOfLoan' %> <br>
+	<div class="form-group">
+		<%= label_tag :payment_frequency %>
+		<%= select_tag :payment_frequency, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]]), 'ng-model'=>'paymentFrequency', :class=>'form-control' %>
+	</div>
 
-<%= label_tag :first_payment_date %>
-<%= date_field_tag :first_payment_date, nil, 'ng-model'=>'firstPaymentDate' %> <br>
+	<div class="form-group">
+		<%= label_tag :compound_period %> 
+		<%= select_tag :compound_period, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]]), 'ng-model'=>'compoundPeriod', :class=>'form-control' %>
+	</div>
+	<p>Basic amortization calculators usually assume that the payment frequency matches the compounding period. In that case, the rate per period is simply the nominal annual interest rate divided by the number of periods per year. When the compound period and payment period are different (as in Canadian mortgages), a more general formula is needed (see my amortization calculation article).</p>
 
-<%= label_tag :payment_frequency %>
-<%= select_tag :payment_frequency, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]],12), 'ng-model'=>'paymentFrequency' %> <br>
-
-<%= label_tag :compound_period %> 
-<%= select_tag :compound_period, options_for_select([['Bi-weekly',24],['Monthly',12],['Quarterly', 4], ['Semi-annually',2], ['Annually',1]],12), 'ng-model'=>'compoundPeriod' %> <br>
-<p>Basic amortization calculators usually assume that the payment frequency matches the compounding period. In that case, the rate per period is simply the nominal annual interest rate divided by the number of periods per year. When the compound period and payment period are different (as in Canadian mortgages), a more general formula is needed (see my amortization calculation article).</p>
-
-
-<button ng-click="createTable()">Calculate</button>
+	<%#= submit_tag 'Calculate', 'ng-model'=>'createTable()' %>
+<% end %>
+	<button class="btn btn-default" ng-click="createTable()">Calculate</button>
 
 
 <h1>Loan Summary</h1>
@@ -54,15 +75,17 @@
 <div id="pie" style="min-width: 300px; height: 320px; max-width: 500px"></div>
 
 <h1>Amortization table</h1>
-<table>
-	<th>
-		<tr>Sequence</tr>
-		<tr>Due date</tr>
-		<tr>Payment Amount</tr>
-		<tr>Interest</tr>
-		<tr>Principal</tr>
-		<tr>Balance</tr>
-	</th>
+<table class="table table-condensed table-hover">
+	<thead>	
+		<tr>
+			<th>Sequence</th>
+			<th>Due date</th>
+			<th>Payment Amount</th>
+			<th>Interest</th>
+			<th>Principal</th>
+			<th>Balance</th>
+		</tr>
+	</thead>
 	<tbody>	
 		<tr ng-repeat="amortizationRow in amortizationRows">
 			<td>{{amortizationRow.index}}</td>
