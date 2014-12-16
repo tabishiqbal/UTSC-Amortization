@@ -9,8 +9,8 @@ angular.module('amortization', [])
 	};
 
 	$scope.getPaymentPerPeriod = function() {
-		var onePlusRtoPowerOfN = Math.pow((1+$scope.getRatePerPeriod()), $scope.getNumberOfPayments())
-		return $scope.loanAmount * $scope.getRatePerPeriod() * onePlusRtoPowerOfN/(onePlusRtoPowerOfN-1)
+		var onePlusRtoPowerOfN = Math.pow((1+$scope.getRatePerPeriod()/100), $scope.getNumberOfPayments())
+		return $scope.loanAmount * $scope.getRatePerPeriod()/100 * onePlusRtoPowerOfN/(onePlusRtoPowerOfN-1)
 	};
 
 
@@ -195,7 +195,7 @@ $(function () {
 };
 
 $scope.calInterestPortion = function(balance) {
-	return balance * $scope.getRatePerPeriod()
+	return balance * $scope.getRatePerPeriod()/100
 };
 $scope.calPrincipalPortion = function(balance) {
 	return $scope.getPaymentPerPeriod() - $scope.calInterestPortion(balance)
